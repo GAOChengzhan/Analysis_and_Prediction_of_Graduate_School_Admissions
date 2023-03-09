@@ -33,10 +33,7 @@ def recommenderSys(loaded_model,gpa,gre_v,gre_q,gre_w,major,degree):
 if __name__=="__main__":
     # load model----------------------------------------------------------------------------------
     
-    filename=r"..\\model\\best_model.model"
-    print(os.path.isfile(filename))
-    with open(filename, 'rb') as f:
-            loaded_model = pickle.load(f)
+    filename=r"./model/best_model.model"
     try:
         with open(filename, 'rb') as f:
             loaded_model = pickle.load(f)
