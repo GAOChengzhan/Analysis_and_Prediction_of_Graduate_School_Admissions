@@ -1,5 +1,7 @@
 # import modules ---------------------------------------------------------------------------------
 import pickle
+import pathlib
+import os
 # define the recommenderSys func------------------------------------------------------------------
 def recommenderSys(loaded_model,gpa,gre_v,gre_q,gre_w,major,degree):
     '''
@@ -30,10 +32,14 @@ def recommenderSys(loaded_model,gpa,gre_v,gre_q,gre_w,major,degree):
 
 if __name__=="__main__":
     # load model----------------------------------------------------------------------------------
-    filename='../model/best_model.sav'
-    loaded_model=pickle.load(open(filename,'rb'))
+    
+    filename=r"..\\model\\best_model.model"
+    print(os.path.isfile(filename))
+    with open(filename, 'rb') as f:
+            loaded_model = pickle.load(f)
     try:
-        loaded_model=pickle.load(open(filename,'rb'))
+        with open(filename, 'rb') as f:
+            loaded_model = pickle.load(f)
     except FileNotFoundError:
         print("Cannot find the model file in the directory:{}".format(filename))
     
