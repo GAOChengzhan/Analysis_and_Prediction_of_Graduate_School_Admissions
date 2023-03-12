@@ -52,7 +52,18 @@ class GradCafeAnalysis():
 
         assert isinstance(export, bool)
 
-        self.grad_cafe_df.hist(figsize=(20,5), layout=(1,2))
+        # Remove outliers
+        grad_cafe_prettify = self.grad_cafe_df[(np.abs(scipy.stats.zscore(self.grad_cafe_df['gpa'])) < 3)]
+        grad_cafe_prettify = self.grad_cafe_df[(np.abs(scipy.stats.zscore(self.grad_cafe_df['gre'])) < 3)]
+
+        fig, axes = plt.subplots(1, 2, figsize=(17, 10))
+        fig.subplots_adjust(hspace=0.25, wspace=0.25)
+
+        # GRE Scores
+        sns.histplot(data=grad_cafe_prettify, x='gre', ax=axes[0], bins=15, linewidth=0.3, edgecolor='white', color='#738bd9')
+
+        # GPA
+        sns.histplot(data=grad_cafe_prettify, x='gpa', ax=axes[1], bins=15, linewidth=0.3, edgecolor='white', color='#e5a089')
 
         if export:
             plt.savefig('analysis_outputs/grad_cafe_distribution_plots.png')
@@ -257,4 +268,4 @@ if __name__ == '__main__':
     grad_cafe_path = 'data/cleaned_data/cleaned_grad_cafe_admissions.csv'
 
     analysis = ByMajor(grad_cafe_path)
-    analysis.generate_distribution_by_result_sciences(True)
+    analysis.generate_distribution_plots(True)

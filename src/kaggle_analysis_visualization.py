@@ -68,7 +68,32 @@ class KaggleAnalysis():
 
         assert isinstance(export, bool)
 
-        self.kaggle_df.hist(figsize=(15,5), layout=(2,4))
+        fig, axes = plt.subplots(2, 4, figsize=(15, 10))
+        fig.subplots_adjust(hspace=0.25, wspace=0.25)
+
+        # GRE Scores
+        sns.histplot(data=self.kaggle_df, x='GRE Score', ax=axes[0][0], linewidth=0.3, edgecolor='white', color='#738bd9')
+
+        # TOEFL Scores
+        sns.histplot(data=self.kaggle_df, x='TOEFL Score', ax=axes[0][1], linewidth=0.3, edgecolor='white', color='#9bb5f0')
+
+        # University Rating
+        sns.histplot(data=self.kaggle_df, x='University Rating', linewidth=0.3, edgecolor='white', ax=axes[0][2], color='#c1d2f1')
+
+        # Statement of Purposes
+        sns.histplot(data=self.kaggle_df, x='SOP', ax=axes[0][3], linewidth=0.3, edgecolor='white', color='#dddcdc')
+
+        # Letter of Recommendations
+        sns.histplot(data=self.kaggle_df, x='LOR', ax=axes[1][0], linewidth=0.3, edgecolor='white', color='#ecc7b6')
+
+        # CGPA
+        sns.histplot(data=self.kaggle_df, x='CGPA', ax=axes[1][1], linewidth=0.3, edgecolor='white', color='#e5a089')
+
+        # Research
+        sns.histplot(data=self.kaggle_df, x='CGPA', ax=axes[1][2], linewidth=0.3, edgecolor='white', color='#cc6c5e')
+
+        # Chance of Admission
+        sns.histplot(data=self.kaggle_df, x='Chance of Admit', ax=axes[1][3], linewidth=0.3, edgecolor='white', color='#8f4c40')
 
         if export:
             plt.savefig('analysis_outputs/kaggle_distribution_plots.png')
@@ -151,4 +176,4 @@ if __name__ == '__main__':
     kaggle_path = 'data/cleaned_data/cleaned_kaggle_grad_admissions.csv'
 
     analysis = KaggleAnalysis(kaggle_path)
-    analysis.generate_correlation_plots(True)
+    analysis.generate_distribution_plots(True)
