@@ -68,7 +68,11 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
     *Output:
         recommendations: a list of the name of recommended universities
     *Modules:
-        torch
+        1. torch
+        2. pickle
+        3. pandas
+        4. ANN_class
+        5. collections
     *Dependencies:
         ANN_cafe_Prediction_Pytorch.ipynb
     '''
