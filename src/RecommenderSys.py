@@ -9,7 +9,7 @@ from collections import defaultdict
 
 # define ThresholdAdapter func--------------------------------------------------------------------
 def ThresholdAdapter(Threshold,rank,mode):
-    if mode==1:
+    if mode==0 or mode==1:
         NewTH=Threshold-(5-rank)*0.08
     
     return NewTH
@@ -187,9 +187,7 @@ if __name__=="__main__":
         # gre_w=float(gre_w)
     except:
         print("Please type in valid numbers!")
-    assert gpa>=0 and gpa <=4.0
-    assert gre_q>=0 and gre_q<=170
-    assert gre_v>=0 and gre_v<=170
+
     # assert gre_w>=0 and gre_w<=5.0 and gre_w%0.5==0
 
 
