@@ -5,6 +5,14 @@ import torch
 from ANN_class import ANN
 import pathlib
 import os
+from collections import defaultdict
+
+# define ThresholdAdapter func--------------------------------------------------------------------
+def ThresholdAdapter(Threshold,rank,mode):
+    if mode==1:
+        NewTH=Threshold-(5-rank)*0.08
+    
+    return NewTH
 # define map uni to rank func--------------------------------------------------------------------
 def rankMap(rank,mode):
     '''
@@ -13,7 +21,7 @@ def rankMap(rank,mode):
     *Output: the map code
     '''
     i=rank
-    university_rank=pd.read_csv('./data/university_rank/university_rank.csv',names=\
+    university_rank=pd.read_csv('../data/university_rank/university_rank.csv',names=\
         ['rank','Uni_Name','Country','0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
     if mode==0:
         if i<50:
@@ -38,7 +46,7 @@ def rankMap(rank,mode):
 
     return uni_rank
 # define the recommenderSys func------------------------------------------------------------------
-def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=10,mode=0):
+def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=15,mode=0):
     '''
     This function aims to take in the input information of the students and uses the trained model 
     to list the universities with high admission probability as recommendation universities, which
@@ -65,8 +73,11 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
         ANN_cafe_Prediction_Pytorch.ipynb
     '''
     for i in [gpa,gre_v,gre_q,gre_w,TOEFL,SOP,LOR,Research]:
-        assert isinstance(i,(int,float))
-        assert i>=0
+        try:
+            assert isinstance(i,(int,float))
+            assert i>=0
+        except AssertionError:
+            print(i)
     assert gpa <=4.0
     assert gre_q<=170 and gre_v<=170 and gre_w<=5.0 and gre_w%0.5==0
     assert TOEFL<=120 and SOP<=5 and LOR<=5 and Research<2
@@ -74,9 +85,10 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
     assert isinstance(mode,int) and mode>=0 and mode<3
     cnt=0
     recommendations=[]
-
+    chances=[]
+    rankloc=defaultdict(int)
     # load universities-----------------------------------------------------------------------------
-    university_rank=pd.read_csv('./data/university_rank/university_rank.csv',names=\
+    university_rank=pd.read_csv('../data/university_rank/university_rank.csv',names=\
         ['rank','Uni_Name','Country','0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
     uni_name=[]
     for i in range(len(university_rank)):
@@ -86,13 +98,19 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
         Threshold=0.5
         # Load the trained model
         model = ANN(input_dim=3, output_dim=1)
-        model.load_state_dict(torch.load('./model/saved_model.pt'))
+        try:
+            model.load_state_dict(torch.load('../model/saved_model.pt'))
+        except FileNotFoundError:
+            print("Cannot find the model file in the directory")
         model.eval()
     # mode 1-----------------------------------------------------------------------------------------
     elif mode==1:
-        Threshold=0.9
-        with open('./model/LinearReg.pkl', 'rb') as file:
-            loaded_model = pickle.load(file)
+        Threshold=0.8
+        try:
+            with open('../model/LinearReg.pkl', 'rb') as file:
+                loaded_model = pickle.load(file)
+        except FileNotFoundError:
+            print("Cannot find the model file in the directory")
     # mode 2-----------------------------------------------------------------------------------------
     elif mode==2:
         pass
@@ -113,12 +131,18 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
                         'LOR', 'CGPA', 'Research',]
                 x=pd.DataFrame([[gre_q+gre_v,TOEFL,uni_rank,SOP,LOR,gpa,Research]],columns=names)
                 y_pred,=loaded_model.predict(x)
+                Threshold=ThresholdAdapter(Threshold,uni_rank,mode)
             # mode 2-----------------------------------------------------------------------------------------
             elif mode==2:
                 pass
             
             if (y_pred>Threshold):
+                rankloc[uni_rank]=rankloc.get(uni_rank,0)+1
+                if rankloc[uni_rank]>3:
+                    continue
                 recommendations.append(insititution)
+            
+                chances.append(y_pred)
                 cnt+=1
             if(cnt>=N):
                 flag=True
@@ -127,51 +151,52 @@ def recommenderSys(gpa,gre_v,gre_q,gre_w,TOEFL,major,degree,SOP,LOR,Research,N=1
             break
         Threshold-=0.1
 
-    return recommendations
+    return recommendations,chances
 
 
 if __name__=="__main__":
-
-
-    # load model----------------------------------------------------------------------------------
-    filename=r"./model/best_model.model"
-    try:
-        with open(filename, 'rb') as f:
-            loaded_model = pickle.load(f)
-    except FileNotFoundError:
-        print("Cannot find the model file in the directory:{}".format(filename))
-    
+    max_len = 59
     HEADER="According to the recommendation system,"+\
             " the following listed universities are for you to consider:"
-    # # input---------------------------------------------------------------------------------------
-    # gpa = input("GPA(out of 4.0):")
-    # gre_v = input("GRE verbal score:")
-    # gre_q = input("GRE quantitative score:")
+    NameChance="------------------------Name of the Uni-----------------------Chance-------"
+    # input---------------------------------------------------------------------------------------
+    gpa = input("GPA(out of 4.0): ")
+    gre_v = input("GRE verbal score: ")
+    gre_q = input("GRE quantitative score: ")
     # gre_w = input("GRE writing score:")
     # major = input("Major:")
     # degree = input("Degree:")
+    TOEFL=input("TOEFL score: ")
+    SOP = input("Statement of Purpose Strength ( out of 5 ): ")
+    LOR = input("Letter of Recommendation Strength ( out of 5 ): ")
+    Research = input("Research Experience ( either 0 or 1 ): ")
 
-    # # input validation----------------------------------------------------------------------------
-    # try:
-    #     gpa=float(gpa)
-    #     gre_v=float(gre_v)
-    #     gre_q=float(gre_q)
-    #     gre_w=float(gre_w)
-    # except:
-    #     print("Please type in valid numbers!")
-    # assert gpa>=0 and gpa <=4.0
-    # assert gre_q>=0 and gre_q<=170
-    # assert gre_v>=0 and gre_v<=170
+    # input validation----------------------------------------------------------------------------
+    try:
+        gpa=float(gpa)
+        gre_v=float(gre_v)
+        gre_q=float(gre_q)
+        TOEFL=float(TOEFL)
+        SOP=int(SOP)
+        LOR=int(LOR)
+        Research=int(Research)
+        # gre_w=float(gre_w)
+    except:
+        print("Please type in valid numbers!")
+    assert gpa>=0 and gpa <=4.0
+    assert gre_q>=0 and gre_q<=170
+    assert gre_v>=0 and gre_v<=170
     # assert gre_w>=0 and gre_w<=5.0 and gre_w%0.5==0
 
 
     # run recommendation function ---------------------------------------------------------------
-    recommendedUni=recommenderSys(gpa=3.5,gre_v=160,gre_q=165,gre_w=4.0,TOEFL=95,\
+    recommendedUni,chances=recommenderSys(gpa=gpa,gre_v=gre_v,gre_q=gre_q,gre_w=4.0,TOEFL=TOEFL,\
                                   major="Computer Science",degree="Masters",\
-                                  SOP=3,LOR=3,Research=0,\
+                                  SOP=SOP,LOR=LOR,Research=Research,\
                                   mode=1)
     
     # list the results --------------------------------------------------------------------------
     print(HEADER)
+    print(NameChance)
     for i,uni in enumerate(recommendedUni):
-        print("{}. {}".format(i+1,uni))
+        print("{:02d}.{:<{}}{:.2f}%".format(i+1,uni, max_len,chances[i]*100).replace(" ", "."))
