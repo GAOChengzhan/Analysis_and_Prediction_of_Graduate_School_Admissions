@@ -33,26 +33,28 @@ class KaggleAnalysis():
         fig.subplots_adjust(hspace=0.25, wspace=0.5)
         fig.delaxes(axes[1][3])
 
+        fig.suptitle('Kaggle Dataset Labels Distribution Boxplots')
+
         # GRE Scores
-        sns.boxplot(y=self.kaggle_df['GRE Score'], ax=axes[0][0], color='red')
+        sns.boxplot(y=self.kaggle_df['GRE Score'], ax=axes[0][0], color='#738bd9')
 
         # TOEFL Scores
-        sns.boxplot(y=self.kaggle_df['TOEFL Score'], ax=axes[0][1], color='orange')
+        sns.boxplot(y=self.kaggle_df['TOEFL Score'], ax=axes[0][1], color='#9bb5f0')
 
         # University Rating
-        sns.boxplot(y=self.kaggle_df['University Rating'], ax=axes[0][2], color='yellow')
+        sns.boxplot(y=self.kaggle_df['University Rating'], ax=axes[0][2], color='#c1d2f1')
 
         # Statement of Purposes
-        sns.boxplot(y=self.kaggle_df['SOP'], ax=axes[0][3], color='green')
+        sns.boxplot(y=self.kaggle_df['SOP'], ax=axes[0][3], color='#dddcdc')
 
         # Letter of Recommendations
-        sns.boxplot(y=self.kaggle_df['LOR'], ax=axes[1][0], color='blue')
+        sns.boxplot(y=self.kaggle_df['LOR'], ax=axes[1][0], color='#ecc7b6')
 
         # CGPA
-        sns.boxplot(y=self.kaggle_df['CGPA'], ax=axes[1][1], color='indigo')
+        sns.boxplot(y=self.kaggle_df['CGPA'], ax=axes[1][1], color='#e5a089')
 
         # Chance of Admission
-        sns.boxplot(y=self.kaggle_df['Chance of Admit'], ax=axes[1][2], color='violet')
+        sns.boxplot(y=self.kaggle_df['Chance of Admit'], ax=axes[1][2], color='#8f4c40')
 
         if export:
             plt.savefig('analysis_outputs/kaggle_boxplots.png')
@@ -70,6 +72,8 @@ class KaggleAnalysis():
 
         fig, axes = plt.subplots(2, 4, figsize=(15, 10))
         fig.subplots_adjust(hspace=0.25, wspace=0.25)
+
+        fig.suptitle('Kaggle Dataset Labels Distribution Histograms')
 
         # GRE Scores
         sns.histplot(data=self.kaggle_df, x='GRE Score', ax=axes[0][0], linewidth=0.3, edgecolor='white', color='#738bd9')
@@ -139,15 +143,18 @@ class KaggleAnalysis():
 
         # Scatter plot
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        fig.subplots_adjust(hspace=0.25, wspace=0.5)
+
+        fig.suptitle('Kaggle Dataset Labels Regression Plots')
 
         # GRE Score vs Chance of Admission
-        sns.regplot(x='GRE Score', y='Chance of Admit', data=self.kaggle_df, fit_reg=True, ax=axes[0])
+        sns.regplot(x='GRE Score', y='Chance of Admit', data=self.kaggle_df, fit_reg=True, ax=axes[0], color='#738bd9')
 
         # CGPA vs Chance of Admission
-        sns.regplot(x='CGPA', y='Chance of Admit', data=self.kaggle_df, fit_reg=True, ax=axes[1])
+        sns.regplot(x='CGPA', y='Chance of Admit', data=self.kaggle_df, fit_reg=True, ax=axes[1], color='#e5a089')
 
         # CGPA vs GRE Score
-        sns.regplot(x='CGPA', y='GRE Score', data=self.kaggle_df, fit_reg=True, ax=axes[2])
+        sns.regplot(x='CGPA', y='GRE Score', data=self.kaggle_df, fit_reg=True, ax=axes[2], color='#a7a2e8')
 
         if export:
             plt.savefig('analysis_outputs/kaggle_correlation_plots.png')
@@ -181,4 +188,4 @@ if __name__ == '__main__':
     kaggle_path = 'data/cleaned_data/cleaned_kaggle_grad_admissions.csv'
 
     analysis = KaggleAnalysis(kaggle_path)
-    analysis.generate_heat_map(True)
+    analysis.generate_correlation_plots(True)
