@@ -4,7 +4,7 @@
 <p align="center">
     Course Project for UCSD ECE 143: Programming for Data Analytics
     <br /> <br />
-    <a href="gchengzhan@ucsd.edu"> Chengzhan Gao </a>
+    <a href="https://github.com/solityde826"> Chengzhan Gao </a>
     ·
     <a href="how016@ucsd.edu"> Houtianfu Wang </a>
     ·
