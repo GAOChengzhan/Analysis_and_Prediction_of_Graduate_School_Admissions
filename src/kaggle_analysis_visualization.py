@@ -109,10 +109,15 @@ class KaggleAnalysis():
 
         assert isinstance(export, bool)
 
+        plt.figure(figsize=(15, 8))
         axes = plt.axes()
 
-        kaggle_correlation_matrix = self.kaggle_df.corr()
-        kaggle_correlation_matrix = sns.heatmap(kaggle_correlation_matrix, ax=axes, annot=True)
+        # Generate a mask for the upper triangle
+        corr = self.kaggle_df.corr()
+        mask = np.triu(np.ones_like(corr, dtype=bool))
+
+        # Draw the heatmap with the mask and correct aspect ratio
+        sns.heatmap(corr, mask=mask, cmap='coolwarm', ax=axes, annot=True, annot_kws={'fontsize': 8, 'fontstyle': 'italic', 'color':'w'})
         axes.set_title('Kaggle Dataset Labels Correlation Matrix')
 
         if export:
@@ -176,4 +181,4 @@ if __name__ == '__main__':
     kaggle_path = 'data/cleaned_data/cleaned_kaggle_grad_admissions.csv'
 
     analysis = KaggleAnalysis(kaggle_path)
-    analysis.generate_distribution_plots(True)
+    analysis.generate_heat_map(True)
