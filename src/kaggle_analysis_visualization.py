@@ -104,7 +104,7 @@ class KaggleAnalysis():
 
         plt.show()
 
-    def generate_heat_map(self, export):
+    def generate_heat_map(self, export=False):
         '''
         Generate heatmap summary of the kaggle dataset labels
 
