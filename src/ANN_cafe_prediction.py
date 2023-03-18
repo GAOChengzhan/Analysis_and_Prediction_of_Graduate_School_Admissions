@@ -53,7 +53,7 @@ class NeuralNetwork(nn.Module):
 
 if __name__=="__main__":
     # Load the data from Excel
-    wb = openpyxl.load_workbook(r"./data/cleaned_data/dataGroupByUniversity/rank_processed.xlsx")
+    wb = openpyxl.load_workbook("./data/university_rank/rank_processed.xlsx")
     sheet = wb.active
     X, y = [], []
     for row in sheet.iter_rows(min_row=2, values_only=True):
