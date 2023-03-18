@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 import openpyxl
 import torch
 import numpy as np
@@ -56,34 +50,28 @@ class NeuralNetwork(nn.Module):
         outputs = self.forward(test_data)
         _, y_pred = torch.max(outputs, dim=1)
         return y_pred.numpy()
-    
-# Load the data from Excel
-wb = openpyxl.load_workbook("./data/cleaned_data/dataGroupByUniversity/rank_processed.xlsx")
-sheet = wb.active
-X, y = [], []
-for row in sheet.iter_rows(min_row=2, values_only=True):
-    X.append([row[2], row[7], row[8],row[9]])  # C、H、I and J
-    y.append(row[10])   # K
-X = torch.tensor(X, dtype=torch.float32)
-y = torch.tensor(y, dtype=torch.long)
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.02, random_state=42)
+if __name__=="__main__":
+    # Load the data from Excel
+    wb = openpyxl.load_workbook(r"./data/cleaned_data/dataGroupByUniversity/rank_processed.xlsx")
+    sheet = wb.active
+    X, y = [], []
+    for row in sheet.iter_rows(min_row=2, values_only=True):
+        X.append([row[2], row[7], row[8],row[9]])  # C、H、I and J
+        y.append(row[10])   # K
+    X = torch.tensor(X, dtype=torch.float32)
+    y = torch.tensor(y, dtype=torch.long)
 
-print_every = 5
-# Create and train the neural network
-nn = NeuralNetwork(input_size=4, output_size=2)
-nn.train(X_train, y_train, epochs=15)
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.02, random_state=42)
 
-
-# Make predictions on the testing set and calculate accuracy
-y_pred = nn.predict(X_test)
-accuracy = np.mean(y_pred == y_test.numpy())
-print(f"Accuracy: {accuracy}")
+    print_every = 5
+    # Create and train the neural network
+    nn = NeuralNetwork(input_size=4, output_size=2)
+    nn.train(X_train, y_train, epochs=15)
 
 
-# In[ ]:
-
-
-
-
+    # Make predictions on the testing set and calculate accuracy
+    y_pred = nn.predict(X_test)
+    accuracy = np.mean(y_pred == y_test.numpy())
+    print(f"Accuracy: {accuracy}")

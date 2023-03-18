@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 #Create by Weirong Dong
 #Considering all the parameters(GPA,GRE,Tofel,Ranking,RL,SOP,Research)
 import torch
@@ -22,10 +16,6 @@ y = torch.from_numpy(admission_data[:, -1]).float()
 # Split into train and test sets
 X_train, y_train = X[:400], y[:400]
 X_test, y_test = X[400:], y[400:]
-
-
-# In[2]:
-
 
 class ANN(nn.Module):
     def __init__(self, input_dim, output_dim):
@@ -60,43 +50,42 @@ def adjust_learning_rate(optimizer, epoch):
     if epoch in adjust_list:
         for param_group in optimizer.param_groups:
             param_group['lr'] = param_group['lr'] * 0.1     
- 
-input_dim = 7
-output_dim = 1
-learning_rate = 0.04
-epochs = 400
-batch_size = 400
+
+if __name__=="__main__":
+    input_dim = 7
+    output_dim = 1
+    learning_rate = 0.04
+    epochs = 400
+    batch_size = 400
 
 
-train_dataset = torch.utils.data.TensorDataset(X_train, y_train)
-train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+    train_dataset = torch.utils.data.TensorDataset(X_train, y_train)
+    train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
 
-model = ANN(input_dim, output_dim)
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    model = ANN(input_dim, output_dim)
+    criterion = nn.MSELoss()
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-train_loss = []
-for epoch in range(epochs):
-    epoch_loss = 0
-    for batch_X, batch_y in train_loader:
-        optimizer.zero_grad()
-        output = model(batch_X)
-        loss = criterion(output, batch_y)
-        loss.backward()
-        optimizer.step()
-        epoch_loss += loss.item()
-        adjust_learning_rate(optimizer, epoch)
-    train_loss.append(epoch_loss)
-    if (epoch % 50 == 0):
-        print('Epoch {}, Loss: {:.4f}'.format(epoch+1, epoch_loss))
+    train_loss = []
+    for epoch in range(epochs):
+        epoch_loss = 0
+        for batch_X, batch_y in train_loader:
+            optimizer.zero_grad()
+            output = model(batch_X)
+            loss = criterion(output, batch_y)
+            loss.backward()
+            optimizer.step()
+            epoch_loss += loss.item()
+            adjust_learning_rate(optimizer, epoch)
+        train_loss.append(epoch_loss)
+        if (epoch % 50 == 0):
+            print('Epoch {}, Loss: {:.4f}'.format(epoch+1, epoch_loss))
 
-y_ann_pred = model(X_test)
-test_loss = criterion(y_ann_pred, y_test)
+    y_ann_pred = model(X_test)
+    test_loss = criterion(y_ann_pred, y_test)
 
-print('Test Loss: {:.4f}'.format(test_loss.item()))
+    print('Test Loss: {:.4f}'.format(test_loss.item()))
 
-
-# In[3]:
 
 
 #Plot the training loss over time
