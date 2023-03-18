@@ -98,11 +98,8 @@ pip install -r requirements.txt
 ```
 
 ### How to Run
-1. Run the `data_cleaning_wrangling.ipynb` notebook to obtain a clean and wrangled output
-of the raw datasets
-2. Run the `data_analysis_visualization.ipynb` notebook to analyze and visualize the datasets
-3. Run the `prediction.ipynb` notebook to generate prediction models from the datasets
-
+1. Run the `doc/presentation_visualizations.ipynb` notebook to obtain visuals from the presentation
+2. Run the `src/RecommenderSys.py` script to predict your admission chances
 
 <!------------------------------------------ File Architecture  ---------------------------------------------------------->
 ## File Architecture
