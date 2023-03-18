@@ -110,16 +110,46 @@ of the raw datasets
 [ECE143_Group9]
 ├─ 📁data
     ├─ 📁cleaned_data
+        ├─ 📁dataGroupByUniversity
+            ├─ 📄Brown University.csv
+            ├─ 📄UCLA.csv
+            ├─ 📄University Of Pennsylvania.csv
         ├─ 📄cleaned_grad_cafe_admissions.csv
         ├─ 📄cleaned_kaggle_grad_admissions.csv
+        ├─ 📄grad_cafe_admissions_updated.csv
         ├─ 📄unlabled_grad_cafe_admissions.csv
     ├─ 📁raw_data
         ├─ 📄kaggle_grad_admissions.csv
         ├─ 📄submissions.csv
+    ├─ 📁university_rank
+        ├─ 📄rank_processed.xlsx
+        ├─ 📄university_rank.csv
+├─ 📁doc
+    ├─ 📁analysis_plots
+      ├─ 📄...
+    ├─ 📄presentation slides.pdf
+    ├─ 📄presentation_visualizations.ipynb
+├─ 📁model
+    ├─ 📄best_model.model
+    ├─ 📄best_model.sav
+    ├─ 📄LinearReg.pkl
+    ├─ 📄saved_model.pt
+    ├─ 📄XGBRegressorodel.pkl
 ├─ 📁src
-    ├─ 📄data_analysis_visualization.ipynb
-    ├─ 📄data_cleaning_wrangling.ipynb
-    ├─ 📄prediction.ipynb
+    ├─ 📄ANN_class.py
+    ├─ 📄ANN_Kaggle_Prediction_Pytorch.py
+    ├─ 📄backup_code.py
+    ├─ 📄data_cleaning_wrangling.py
+    ├─ 📄Different_Regressors_on_Kaggle_data.py
+    ├─ 📄grad_cafe_analysis_visualization.py
+    ├─ 📄helper.py
+    ├─ 📄kaggle_analysis_visualization.py
+    ├─ 📄MapUni2Rank.py
+    ├─ 📄naive_Bayes.py
+    ├─ 📄prediction.py
+    ├─ 📄RecommenderSys.py
+├─ 📁testing
+    ├─ 📄...
 ├─ 📄.gitignore
 ├─ 📄README.md
 ```
